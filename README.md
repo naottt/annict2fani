@@ -1,0 +1,2 @@
+# annict2fanicsv
+アニメ視聴記録、感想シェアサイトAnnict.comに自分が書いた感想を全て取得し、Fani通調査票形式のCSVを出力します。
