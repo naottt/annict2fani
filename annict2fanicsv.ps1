@@ -1,4 +1,4 @@
-﻿# annict2fanicsv.ps1
+# annict2fanicsv.ps1
 # Annict.comから自分の書いたレビュー、評価、各回コメント、作品メモを全て取得し、デスクトップにFani通調査票形式CSVを出力
 # Fani通のレビュー用に評点、視聴状況を適宜変換
 #
@@ -381,9 +381,22 @@ function AddOphanData ($data, $orphans, $type) {
                 annictId    = $orphan.annictId
                 シーズン   = $orphan.season
                 作品タイトル = $orphan.title
+                開始日       = ""
+                終了日       = ""
                 備考         = if ($type -eq "comment") { "レビュー無し各話コメント" } else { "レビュー無し作品メモ" }
-                視聴状況     = $orphan.viewerStatusState
                 話数         = $orphan.episodesCount
+                視聴状況     = $orphan.viewerStatusState
+                事前期待     = ""
+                総合         = ""
+                初回         = ""
+                ストーリー   = ""
+                ビジュアル   = ""
+                キャスト     = ""
+                楽曲         = ""
+                その他1項目名  = ""
+                その他1項目評点 = ""
+                その他2項目名   = ""
+                その他2項目評点 = ""
                 本文          = $orphan.body
                 レビュー更新日 = if ($type -eq "comment") { $orphan.updatedAt } else { "" }
                 カナタイトル  = $orphan.titleKana
