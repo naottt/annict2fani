@@ -8,11 +8,10 @@
 
 # Requirement
 * Windows Powershell (5.1以降) / Powershell (7以降)
-* Windows標準機能で動きます。
-* 動作確認はWindows11(24H2)で行っています。
+* Windows標準機能(Windows Powershell)で動きます。
 
 # Installation
-Annictの個人用アクセストークンを以下から新規作成します。
+Annictの個人用アクセストークンを新規作成します。
 [Annict.com/settings/apps](https://annict.com/settings/apps)
 
 Windows上でユーザー環境変数 ANNICT_ACCESS_TOKEN を作成し、上記で作成したアクセストークンをセットします。
@@ -44,6 +43,7 @@ CSV出力します。utf-8 BOM有のCSVになります。この場合ImportExcel
 
 
 # Note
+* 動作確認はWindows11(24H2)で行っています。
 * 各話コメントはレビュー本文末尾に"第1話:コメント"形式で追記します
 * レビューが複数回がある場合、評価が上書きされない様に別行として出力しています
 * レビューが無く、各回コメントもしくは番組メモのみの場合は追記します。その場合評価等は入りません。備考欄に注釈をいれています
