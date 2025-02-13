@@ -16,6 +16,7 @@ Windows標準機能で動きます。片仮名/平仮名変換のためVB.NETの
 # Installation
 Annictの個人用アクセストークンを以下から新規作成します。
 [Annict.com/settings/apps](https://annict.com/settings/apps)
+
 Windows上でユーザー環境変数 ANNICT_ACCESS_TOKEN を作成し、上記で作成したアクセストークンをセットします。
 
 # Usage
