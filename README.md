@@ -16,17 +16,20 @@ Annictの個人用アクセストークンを新規作成します。
 
 Windows上でユーザー環境変数 ANNICT_ACCESS_TOKEN を作成し、上記で作成したアクセストークンをセットします。
 
-Excel(.xlsx)出力が標準です。事前にImportExcelモジュールを管理者権限でインストールする必要があります。
+Excel(.xlsx)出力が標準です。事前にWindows Powershellのターミナルから
+ImportExcelモジュールを管理者権限でインストールする必要があります。
 ```
 Install-Module -Name ImportExcel
 ```
 
 # Usage
-お好みのフォルダでPowershellターミナルを開きスクリプトを実行すればOK。デスクトップ上に "annict_personal_review_YYYYMMDD_HHMM.xlsx" が出力されます。(スクリプト実行権限は設定済の前提)
+お好みのフォルダでPowershellターミナルを開きスクリプトを実行すればOK。
+デスクトップ上に "annict_personal_review_YYYYMMDD_HHMM.xlsx" が出力されます。(スクリプト実行権限は設定済のこと)
 ```
 .\annict2fani.ps1
 ```
-もしくは、annict2fani.ps1のショートカットを作成し、ショートカットを右クリックしプロパティ(R)＞リンク(T)先を以下に変更します。その後ショートカットを実行して下さい。
+もしくは、annict2fani.ps1のショートカットを作成し、ショートカットを右クリックしプロパティ(R)＞リンク(T)先を以下に変更します。
+その後ショートカットを実行して下さい。
 ```
 powershell -ExecutionPolicy RemoteSigned -File annict2fani.ps1
 ```
