@@ -6,14 +6,10 @@
 取得するのは記録(感想)、評価、各回の記録(感想)、番組メモです。
 ([Fani通](https://x.com/fanitu)は年2回発行されるアニメ総合感想同人誌です。)
 
-Fani通調査票(Excel)にはExcelで出力したファイルを付属 FaniImport.xlsm を使ってコピーします。
-
 # Requirement
-* Windows Powershell (5.1以降)
-* Powershell (7以降)
-
+* Windows Powershell (5.1以降) / Powershell (7以降)
 * Windows標準機能で動きます。
-* 片仮名/平仮名変換のためVB.NETのStrConvを内部で利用しています。動作確認はWindows11(24H2)で行っています。
+* 動作確認はWindows11(24H2)で行っています。
 
 # Installation
 Annictの個人用アクセストークンを以下から新規作成します。
@@ -43,6 +39,9 @@ CSV出力します。utf-8 BOM有のCSVになります。この場合ImportExcel
 ```
 .\annict2fani.ps1 -csv
 ```
+出力されたExcelファイルを本家Fani通調査票(Excel)にコピーするには、付属の FaniImport.xlsm を使います。
+マクロ実行を許可して、同Excelマクロファイルを開き、「Fani通調査票にインポート」ボタンを押してファイルを選択、して下さい。
+
 
 # Note
 * 各話コメントはレビュー本文末尾に"第1話:コメント"形式で追記します
