@@ -1,5 +1,5 @@
-# annict2fanicsv.ps1
-# Annict.comから自分の書いたレビュー、評価、各回コメント、作品メモを全て取得し、デスクトップにFani通調査票形式CSVを出力
+# annict2fani.ps1
+# Annict.comから自分の書いたレビュー、評価、各回コメント、作品メモを全て取得し、デスクトップにFani通調査票形式CSV/Excelを出力
 # Fani通のレビュー用に評点、視聴状況を適宜変換
 #
 # 注意
@@ -15,7 +15,7 @@ $accessToken = $Env:ANNICT_ACCESS_TOKEN
 
 #出力ファイル
 $outputFilePath = Join-Path -Path ([System.Environment]::GetFolderPath("Desktop")) `
-                    -ChildPath "annict_personal_review_$(get-date -Format "yyyyMMdd_HHmm").csv"
+                    -ChildPath "annict_personal_review_$(get-date -Format "yyyyMMdd_HHmm")"
 
 # Annict GraphQLエンドポイントURI
 $endpoint = "https://api.annict.com/graphql"
@@ -111,6 +111,18 @@ query ($user: String!) {
     }
 }
 '@
+
+# ImportExcel モジュールの存在を確認
+function CheckImportExcelModule () {
+
+    if (-not (Get-Module -ListAvailable -Name ImportExcel)) {
+        Write-Host "エラー: ImportExcel モジュールが見つかりません。"
+        Write-Host "Excel出力をするには以下のコマンド(管理者権限)でインストールして下さい。"
+        Write-Host "`nInstall-Module -Name ImportExcel`n"
+        exit 1
+    }
+}
+
 
 #アクセストークンチェック
 function CheckAccessToken($accessToken) {
@@ -262,7 +274,6 @@ function ConvertAnnictRevewsToCsvdata($data) {
     $csvData = $items | ForEach-Object {
         [PSCustomObject]@{
             annictId    = $_.item.work.annictId
-            シーズン   = ($_.item.work.seasonYear).ToString() + (MapValue SEASON $_.item.work.seasonName)
             作品タイトル = $_.item.work.title
             開始日       = "" # ([DateTime]::Parse($_.item.work.started_on)).ToLocalTime()
             終了日       = ""
@@ -282,6 +293,7 @@ function ConvertAnnictRevewsToCsvdata($data) {
             その他2項目評点 = ""
             本文          = $_.item.body
             レビュー更新日 = ([DateTime]::Parse($_.item.updatedAt)).ToLocalTime()
+            放映シーズン   = ($_.item.work.seasonYear).ToString() + (MapValue SEASON $_.item.work.seasonName)
             カナタイトル   = if($_.item.work.titleKana -eq "") { strConvHiragana $_.item.work.title} else {$_.item.work.titleKana}
 #            カナタイトル  = $_.item.work.titleKana
         }
@@ -379,7 +391,6 @@ function AddOphanData ($data, $orphans, $type) {
         if(-not $merged) {
             $item = [PSCustomObject]@{
                 annictId    = $orphan.annictId
-                シーズン   = $orphan.season
                 作品タイトル = $orphan.title
                 開始日       = ""
                 終了日       = ""
@@ -399,6 +410,7 @@ function AddOphanData ($data, $orphans, $type) {
                 その他2項目評点 = ""
                 本文          = $orphan.body
                 レビュー更新日 = if ($type -eq "comment") { $orphan.updatedAt } else { "" }
+                放映シーズン   = $orphan.season
                 カナタイトル  = $orphan.titleKana
             }
             $data += $item    
@@ -407,26 +419,44 @@ function AddOphanData ($data, $orphans, $type) {
     return $data
 }
 
-#CSVを出力
-function ExportCsv ($csv, $outputFilePath) {
+#CSVをソート
+function SortCSV ($csv) {
+    $csv = $csv | Sort-Object -Property 放映シーズン, カナタイトル
+    #シーズンに付加してあるソート用の文字列-\dを削除
+    $csv | ForEach-Object {$_.放映シーズン = $_.放映シーズン -replace "-\d", "" }
+    return $csv
+}
 
-    try {
-        $csv = $csv | Sort-Object -Property シーズン, カナタイトル
-        #シーズンに付加してあるソート用の文字列-\dを削除
-        $csv | ForEach-Object {$_.シーズン = $_.シーズン -replace "-\d", "" }
+#CSV/Excelを出力
+function ExportFile ($csv, $outputFilePath, $exportCsv) {
 
-        # Excelで読み込めるutf8 CSV(BOM有)を指定する方法がバージョンで違う
-        $psVersion = $PSVersionTable.PSVersion
-        if ($psVersion.Major -gt 7 -or ($psVersion.Major -eq 7 -and $psVersion.Minor -ge 1)) {
-            $csv | Export-Csv -Path $outputFilePath -NoTypeInformation -Encoding utf8BOM
-        } else {
-            $csv | Export-Csv -Path $outputFilePath -NoTypeInformation -Encoding utf8
+    if($exportCsv) {
+        $outputFilePath += ".csv"
+        try {
+            # Excelで読み込めるutf8 CSV(BOM有)を指定する方法がバージョンで違う
+            $psVersion = $PSVersionTable.PSVersion
+            if ($psVersion.Major -gt 7 -or ($psVersion.Major -eq 7 -and $psVersion.Minor -ge 1)) {
+                $csv | Export-Csv -Path $outputFilePath -NoTypeInformation -Encoding utf8BOM
+            } else {
+                $csv | Export-Csv -Path $outputFilePath -NoTypeInformation -Encoding utf8
+            }
+            Write-Host "CSV出力: $outputFilePath"
+        } catch {
+            Write-Error "CSV出力エラー: $($_.Exception.Message)"
+            Write-Error "ファイルパス: $outputFilePath"
         }
-        Write-Host "CSV出力: $outputFilePath"
-    } catch {
-        Write-Error "CSV出力エラー: $($_.Exception.Message)"
-        Write-Error "ファイルパス: $outputFilePath"
     }
+    else {
+        $outputFilePath += ".xlsx"
+        try {
+            $csv | Export-Excel -Path $outputFilePath
+            Write-Host "Excel出力: $outputFilePath"
+        } catch {
+            Write-Error "Excel出力エラー: $($_.Exception.Message)"
+            Write-Error "ファイルパス: $outputFilePath"
+        }
+    }
+
 }
 
 #メイン処理
@@ -434,6 +464,13 @@ function Main($accessToken, $outputFilePath, $ags) {
 
     #引数-dumpがあるならTrue
     $dump = $ags -contains "-dump"
+    #引数-csvがあるならTrue
+    $exportCsv = $ags -contains "-csv"
+
+    #ImportExcelモジュール存在チェック
+    if(-not $exportCsv) {
+        CheckImportExcelModule
+    }
 
     #アクセストークンチェック
     CheckAccessToken $accessToken
@@ -465,8 +502,12 @@ function Main($accessToken, $outputFilePath, $ags) {
     $csvdata = AddOphanData $csvdata $csvLibraries "note"
     $csvdata = AddOphanData $csvdata $csvRecords "comment"
 
-    #CSV出力
-    ExportCsv $csvdata $outputFilePath
+    #CSVdataをソート
+    $csvData = SortCSV $csvdata
+
+    #CSV/Excel出力
+    ExportFile $csvdata $outputFilePath $exportCsv
+
     Start-Sleep -Seconds 5
 }
 
