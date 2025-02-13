@@ -6,10 +6,10 @@
 取得するのは記録(感想)、評価、各回の記録(感想)、番組メモです。
 ([Fani通](https://x.com/fanitu)は年2回発行されるアニメ総合感想同人誌です。)
 
-実際のFani通調査票(Excel)には付属 AnnictCSV2FaniExcel.xlsm を使ってコピーします。
+Fani通調査票(Excel)には付属 AnnictCSV2FaniExcel.xlsm を使ってコピーします。
 
 # Requirement
-* Windows Powershell
+* Windows Powershell (5.1以降)
 
 Windows標準機能で動きます。片仮名/平仮名変換のためVB.NETのStrConvを内部で利用しています。動作確認はWindows11(24H2)で行っています。
 
@@ -42,7 +42,7 @@ powershell -ExecutionPolicy RemoteSigned -File annict2fanicsv.ps1
 * CSVはシーズン、番組名かな順にソートしています
 * Annictの視聴状況 "見たい/見てる/見た/一時中断/視聴中止" をFani通の"(見たい)/視聴途中/視聴済/視聴途中/途中で切"に割当ています。"見たい"はFani通の視聴状況にはありません。またFani通の"繰り返し/初回切"ステータスは無いので割り当てていません
 * 評価はAnnictが4段階、Fani通は5段階なのでFani通の5～2に割り当てています。1は設定していません
-* Fani通調査票(Excel)にはAnnictCSV2FaniExcel.xlsmを使って転記します。
+* Fani通調査票(Excel)にはAnnictCSV2FaniExcel.xlsmを使って転記します
 
 # Author
 * 作成者 @naottt
