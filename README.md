@@ -42,7 +42,7 @@ CSV出力します。utf-8 BOM有のCSVになります。この場合ImportExcel
 .\annict2fani.ps1 -csv
 ```
 出力されたExcelファイルを本家Fani通調査票(Excel)にコピーするには、付属の FaniImport.xlsm を使います。
-マクロ実行を許可して、同Excelマクロファイルを開き、「Fani通調査票にインポート」ボタンを押してファイルを選択、して下さい。
+マクロ実行を許可して、同Excelマクロファイルを開き、「Fani通調査票にインポート」ボタンを押し、表示に従ってファイルを選択して下さい。
 
 
 # Note
