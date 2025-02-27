@@ -116,9 +116,9 @@ query ($user: String!) {
 function CheckImportExcelModule () {
 
     if (-not (Get-Module -ListAvailable -Name ImportExcel)) {
-        Write-Host "エラー: ImportExcel モジュールが見つかりません。"
-        Write-Host "Excel出力をするには以下のコマンド(管理者権限)でインストールして下さい。"
-        Write-Host "`nInstall-Module -Name ImportExcel`n"
+        Write-Host "エラー: ImportExcel モジュールが見つかりません。 -csvを付けて実行するか、"
+        Write-Host "管理者権限でインストールして下さい。`n"
+        Write-Host "Install-Module -Name ImportExcel"
         exit 1
     }
 }
@@ -449,7 +449,13 @@ function ExportFile ($csv, $outputFilePath, $exportCsv) {
     else {
         $outputFilePath += ".xlsx"
         try {
-            $csv | Export-Excel -Path $outputFilePath
+            $excel = $csv | Export-Excel -Path $outputFilePath -AutoSize -MaxAutoSizeRows 10 `
+             -AutoFilter -FreezeTopRow -NoNumberConversion * -WorksheetName 'AnnictPersonalReview' -PassThru
+            $excel.Workbook.Worksheets[1].Column(2).width = 50 #タイトル
+            $excel.Workbook.Worksheets[1].Column(19).width = 100 #本文
+            $excel.Workbook.Worksheets[1].Column(19).Style.WrapText = $true #折り返して全体を表示
+            $excel.save()
+            $excel.Dispose()
             Write-Host "Excel出力: $outputFilePath"
         } catch {
             Write-Error "Excel出力エラー: $($_.Exception.Message)"
