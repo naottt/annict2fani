@@ -16,14 +16,13 @@ Annictの個人用アクセストークンを新規作成します。
 
 Windows上でユーザー環境変数 ANNICT_ACCESS_TOKEN を作成し、上記で作成したアクセストークンをセットします。
 
-Excel(.xlsx)出力が標準です。事前にWindows Powershellのターミナルから
-ImportExcelモジュールを管理者権限でインストールする必要があります。
+Excel(.xlsx)出力が標準です。この場合、事前にWindows PowershellのターミナルからImportExcelモジュールを管理者権限でインストールして下さい。
 ```
 Install-Module -Name ImportExcel
 ```
 
 # Usage
-お好みのフォルダでPowershellターミナルを開きスクリプトを実行すればOK。
+お好みのフォルダでPowershellターミナルを開きスクリプトを実行して下さい。
 デスクトップ上に "annict_personal_review_YYYYMMDD_HHMM.xlsx" が出力されます。(スクリプト実行権限は設定済のこと)
 ```
 .\annict2fani.ps1
@@ -33,16 +32,17 @@ Install-Module -Name ImportExcel
 ```
 powershell -ExecutionPolicy RemoteSigned -File annict2fani.ps1
 ```
+CSV出力します。utf-8 BOM有のCSVになります。この場合ImportExcelモジュールのインストールは不要ですが
+FaniImport.xlsmを使うにはExcelで出力されたCSVファイルを.xlsxファイルに保存し直して下さい。
+```
+.\annict2fani.ps1 -csv
+```
 Annict APIから取得したJSONファイルをデスクトップ上へファイル保存します。(エラー調査用)
 ```
 .\annict2fani.ps1 -dump
 ```
-CSV出力します。utf-8 BOM有のCSVになります。この場合ImportExcelモジュールのインストールは不要です。
-```
-.\annict2fani.ps1 -csv
-```
 出力されたExcelファイルを本家Fani通調査票(Excel)にインポートするには、付属の FaniImport.xlsm を使います。
-マクロ実行を許可して、同Excelマクロファイルを開き、「Fani通調査票にインポート」ボタンを押し、表示に従ってファイルを選択して下さい。
+開いてマクロ実行を許可し、「Fani通調査票にインポート」ボタンを押して、表示に従って下さい。
 
 
 # Note
