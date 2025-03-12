@@ -82,6 +82,7 @@ query ($user: String!)  {
                     number
                     numberText
                 }
+                ratingState
                 comment
                 updatedAt
             }
@@ -200,6 +201,7 @@ function RequestAndCheck($query, $accessToken, $dump, $user) {
 enum Maps {
     STATUS
     RATING
+    RATINGSTATE
     SEASON
     EPISODE
 }
@@ -228,6 +230,16 @@ function MapValue ( [Maps]$selectedMap, $value) {
                 "GOOD"    = 4
                 "AVERAGE" = 3
                 "BAD"     = 2
+            }
+            break
+        }
+        RATINGSTATE {
+        # 各話評価を置き換え
+            $mapping = @{
+                "GREAT"   = "とても良い"
+                "GOOD"    = "良い"
+                "AVERAGE" = "普通"
+                "BAD"     = "良くない"
             }
             break
         }
@@ -311,6 +323,11 @@ function ConvertAnnictRecordsToCsvdata($data) {
     $items = $items | Sort-Object -Property annictId, {[Int32]$_.episode.number}
     #item一覧をFani通調査票CSVの1行に出力(項目がないものは空)
     $csvData = $items | ForEach-Object {
+        #各話評価があった場合変換して 1話:{とても良い/良い/普通/良くない}:コメント という形に追加
+        $ratingState = ""
+        if ($null -ne $_.ratingState) {
+            $ratingState = ":" + (MapValue RATINGSTATE $_.ratingState)
+        }
         [PSCustomObject]@{
             annictId  = $_.work.annictId
             title     = $_.work.title
@@ -318,7 +335,7 @@ function ConvertAnnictRecordsToCsvdata($data) {
             season   = ($_.work.seasonYear).ToString() + (MapValue SEASON $_.work.seasonName)
             episodesCount = MapValue EPISODE $_.work.episodesCount
             viewerStatusState = MapValue STATUS $_.work.viewerStatusState
-            body      = "$($_.episode.numberText):$($_.comment)"
+            body      = "$($_.episode.numberText)$($ratingState):$($_.comment)"
             updatedAt = ([DateTime]::Parse($_.updatedAt)).ToLocalTime()
             merged    = $false
         }
