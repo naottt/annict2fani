@@ -32,8 +32,8 @@ Install-Module -Name ImportExcel
 ```
 powershell -ExecutionPolicy RemoteSigned -File annict2fani.ps1
 ```
-CSV出力します。utf-8 BOM有のCSVになります。この場合ImportExcelモジュールのインストールは不要ですが
-FaniImport.xlsmを使うにはExcelで出力されたCSVファイルを.xlsxファイルに保存し直して下さい。
+CSV出力します。utf-8 BOM有のCSVになります。この場合ImportExcelモジュールのインストールは不要です。
+FaniImport.xlsmを使うには出力されたCSVファイルをExcel等で.xlsxファイルに保存し直して下さい。
 ```
 .\annict2fani.ps1 -csv
 ```
@@ -49,7 +49,7 @@ Annict APIから取得したJSONファイルをデスクトップ上へファイ
 * 動作確認はWindows11(24H2)で行っています。
 * 各話コメントはレビュー本文末尾に"第1話:コメント"形式で追記します
 * レビューが複数回がある場合、評価が上書きされない様に別行として出力しています
-* レビューが無く、各回コメントもしくは番組メモのみの場合は追記します。その場合評価等は入りません。備考欄に注釈をいれています
+* レビューが無く、各回コメントもしくは番組メモのみの場合は追記し、備考欄に注釈をいれています
 * A列にAnnictIdを出力します(Fani通調査票の作品IDと互換性はありません)
 * T列に記入日時を出力します(取得可能な場合のみ。Fani通調査票に項目はありません)
 * U列に放映シーズンを出力します(Fani通調査票に項目はありません)
